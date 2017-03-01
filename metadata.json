@@ -1,0 +1,15 @@
+{
+  "name": "aolabs-retrypuppet",
+  "version": "0.0.1",
+  "author": "aolabs",
+  "summary": "Simple python script to retry puppet agent runs if the agent is already running.",
+  "license": "LGPLv3",
+  "source": "https://github.com/aolabs/puppet-retrypuppet.git",
+  "project_page": "https://github.com/aolabs/puppet-retrypuppet",
+  "issues_url": "https://github.com/aolabs/puppet-retrypuppet/issues",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ],
+  "data_provider": null
+}
+
