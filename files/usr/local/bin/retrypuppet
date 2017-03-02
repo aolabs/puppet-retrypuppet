@@ -17,22 +17,25 @@ def run():
   # Run puppet inside stdbuf to attempt to eliminate any buffering.
   with Popen( [ 'stdbuf', '-oL', '-eL', 'puppet' ] + sys.argv, stdout=PIPE, stderr=STDOUT ) as p:
 
-    firstloop=True
     locked=False
+    line_num=0
 
     # Loop through the lines of input until puppet exits.
     for line in p.stdout:
 
-      # Check if the first line of output indicates puppet already running.
-      if firstloop and ( 'run of puppet configuration client already in progress' in line.lower().decode() ):
+      # Count lines read from the puppet agent.
+      line_num += line_num
+
+      # Check if the first line of output indicates puppet already running (the in progress message appears to
+      # always be on the first line, so we don't waste time checking every line of the run - short-circuit logic).
+      if line_num == 1 and ( 'run of puppet configuration client already in progress' in line.lower().decode() ):
         locked = True
 
-      # Pass the output of puppet through to the console.
-      sys.stdout.write( line.decode() )
-      sys.stdout.flush()
-
-    # Don't waste time on subsequent interations check for 'run in progress' text.
-    firstloop=False
+      # Pass the output of puppet through to the console if the run was not locked (if locked,
+      # we still loop to drain the input buffer and avoid any orphan child processes).
+      if not locked:
+        sys.stdout.write( line.decode() )
+        sys.stdout.flush()
 
   # If puppet output indicated that a run was already in progress, then return False.
   if locked:
