@@ -3,81 +3,36 @@
 #### Table of Contents
 
 1. [Description](#description)
-1. [Setup - The basics of getting started with retrypuppet](#setup)
-    * [What retrypuppet affects](#what-retrypuppet-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with retrypuppet](#beginning-with-retrypuppet)
-1. [Usage - Configuration options and additional functionality](#usage)
-1. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-1. [Limitations - OS compatibility, etc.](#limitations)
-1. [Development - Guide for contributing to the module](#development)
+1. [The Problem](#the-problem)
+1. [The Solution](#the-solution)
+1. [Contributors](#contributors)
 
 ## Description
+Provides a simple python based wrapper script around calls to `puppet agent` to automatically retry in the event that a run is already in progress.
 
-Start with a one- or two-sentence summary of what the module does and/or what
-problem it solves. This is your 30-second elevator pitch for your module.
-Consider including OS/Puppet version it works with.
+## The Problem
+Where the puppet agent is polling at a high frequency, whether in "apply" mode or "noop" mode for audit purposes, it is likely that any manual agent run will clash with the agent already running in the background.  This can be especially irritating where an orchestration tool such as mCollective or Salt is used to run puppet - perhaps as part of a deployment process.
 
-You can give more descriptive information in a second paragraph. This paragraph
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?" If your module has a range of functionality (installation, configuration,
-management, etc.), this is the time to mention it.
+```
+# puppet agent -tv
+Notice: Run of Puppet configuration client already in progress; skipping  (/opt/puppetlabs/puppet/cache/state/agent_catalog_run.lock exists)
+```
 
-## Setup
+## The Solution
+The `retrypuppet` wrapper script is called in place of the `puppet` binary.  The script passes any arguments specified on its command-line directly to the `puppet` binary and passes any output from the puppet binary on its standard output (note that any agent output to stderr will be flattened to stdout).  If the puppet agent returns a notice that a run is already in progress, then the script will wait for a 30 second back-off period before trying again.  To reduce noise, `retrypuppet` will not display any output from a blocked run other than a notice.
 
-### What retrypuppet affects **OPTIONAL**
+```
+# retrypuppet agent -tv
+Run already in progress, will retry in 30 seconds, 9 attempts remain...
+Run already in progress, will retry in 30 seconds, 8 attempts remain...
+Info: Using configured environment 'production'
+Info: Retrieving pluginfacts
+Info: Retrieving plugin
+Info: Loading facts
+Info: Caching catalog for centos-puppet.localdomain
+Info: Applying configuration version '1488412377'
+Notice: Applied catalog in 1.14 seconds
+```
 
-If it's obvious what your module touches, you can skip this section. For
-example, folks can probably figure out that your mysql_instance module affects
-their MySQL instances.
-
-If there's more that they should know about, though, this is the place to mention:
-
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
-
-### Setup Requirements **OPTIONAL**
-
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
-
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you might want to include an additional "Upgrading" section
-here.
-
-### Beginning with retrypuppet
-
-The very basic steps needed for a user to get the module up and running. This
-can include setup steps, if necessary, or it can be an example of the most
-basic use of the module.
-
-## Usage
-
-This section is where you describe how to customize, configure, and do the
-fancy stuff with your module here. It's especially helpful if you include usage
-examples and code samples for doing things with your module.
-
-## Reference
-
-Here, include a complete list of your module's classes, types, providers,
-facts, along with the parameters for each. Users refer to this section (thus
-the name "Reference") to find specific details; most users don't read it per
-se.
-
-## Limitations
-
-This is where you list OS compatibility, version compatibility, etc. If there
-are Known Issues, you might want to include them under their own heading here.
-
-## Development
-
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc. **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You can also add any additional sections you feel
-are necessary or important to include here. Please use the `## ` header.
+## Contributors
+Original module authored by Patrick Brennan and released under the LGPLv3 license courtesy of Hapara LLC.  Ongoing maintenance by AO Labs courtesy of Patrick Brennan.
