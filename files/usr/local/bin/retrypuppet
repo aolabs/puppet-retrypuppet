@@ -56,4 +56,4 @@ while not run() and retries:
   sleep( delay )
   retries -= 1
   if not retries:
-    print( 'Not attempts remain...will exit.')
+    print( 'No attempts remain...will exit.')
