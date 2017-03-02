@@ -25,7 +25,7 @@ def run():
     for line in p.stdout:
 
       # Count lines read from the puppet agent.
-      line_num += line_num
+      line_num += 1
 
       # Check if the first line of output indicates puppet already running (the in progress message appears to
       # always be on the first line, so we don't waste time checking every line of the run - short-circuit logic).
