@@ -15,8 +15,10 @@ args.pop(0)
 # running).  Stdout and stderr are passed through to the console.
 def run():
 
-  # Run puppet inside stdbuf to attempt to eliminate any buffering.
-  with Popen( [ 'stdbuf', '-oL', '-eL', 'puppet' ] + sys.argv, stdout=PIPE, stderr=STDOUT ) as p:
+  try:
+  
+    # Run puppet inside stdbuf to attempt to eliminate any buffering.
+    p = Popen( [ 'stdbuf', '-oL', '-eL', 'puppet' ] + sys.argv, stdout=PIPE, stderr=STDOUT )
 
     locked=False
 
@@ -28,11 +30,16 @@ def run():
       if not line_num and ( 'run of puppet configuration client already in progress' in line.lower().decode() ):
         locked = True
 
-      # Pass the output of puppet through to the console if the run was not locked (if locked,
-      # we still loop to drain the input buffer and avoid any orphan child processes).
+      # Pass the output of puppet through to the console if the run was not locked.  If locked, we still loop to drain
+      # the input buffer and avoid any orphan child processes - the necessity of this is unclear it's possible we could
+      # just return False, but there is no harm in continuing to loop.
       if not locked:
         sys.stdout.write( line.decode() )
         sys.stdout.flush()
+
+  finally:
+    p.wait()
+
 
   # If puppet output indicated that a run was already in progress, then return False.
   if locked:
