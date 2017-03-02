@@ -51,6 +51,8 @@ delay=30
 
 # Retry until run returns true or we run out of retries.
 while not run() and retries:
-  print( 'Will retry in {} seconds. {} attempts remain...'.format( delay, retries ) )
+  print( 'Run already in progress, will retry in {} seconds. {} attempts remain...'.format( delay, retries ) )
   sleep( delay )
   retries -= 1
+  if not retries:
+    print( 'Not attempts remain...will exit.')
