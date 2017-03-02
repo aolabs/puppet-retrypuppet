@@ -1,5 +1,7 @@
 class retrypuppet() {
 
+  ensure_packages( [ 'python3' ], { 'ensure' => 'present' } )
+
   file { '/usr/local/bin/retrypuppet':
     ensure => 'present',
     owner  => 'root',
