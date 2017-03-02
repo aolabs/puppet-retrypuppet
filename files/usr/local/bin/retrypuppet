@@ -19,7 +19,6 @@ def run():
   with Popen( [ 'stdbuf', '-oL', '-eL', 'puppet' ] + sys.argv, stdout=PIPE, stderr=STDOUT ) as p:
 
     locked=False
-    line_num=0
 
     # Loop through the lines of input until puppet exits.
     for line_num, line in enumerate( p.stdout ):
