@@ -1,0 +1,77 @@
+---
+
+# We don't require sudo so we can be tested in the (faster) container based environment.
+sudo: false
+
+# Use trusty rather than precise.
+dist: trusty
+
+# Provide entropy to speed up the jruby installations.
+addons:
+  apt:
+    packages:
+      - haveged
+
+# Make sure we use a current bundler, disable system tests on bundler install for speed.
+bundler_args: --without system_tests
+before_install:
+  - gem update bundler
+
+# Variables to assign to all jobs.
+env:
+  global:
+    - USENETWORK=true
+    - STRICT_VARIABLES="yes"
+    - STRICT="error"
+    - JRUBY_OPTS="--debug"
+
+# Use the Ruby Travis image
+language: ruby
+
+# Include specific tests rather than letting Travis do is automatic
+# matrix (else we end up with more excludes that we would have includes).
+matrix:
+  include:
+    - rvm: 2.2
+      env: PUPPET_VERSION="~> 4.0" CHECK=test
+    - rvm: 2.3
+      env: PUPPET_VERSION="~> 4.0" CHECK=test
+    - rvm: 2.4
+      env: PUPPET_VERSION="~> 4.0" CHECK=test
+    - rvm: 2.4
+      env: PUPPET_VERSION="~> 4.0" CHECK=rubocop
+    - rvm: 2.4
+      env: PUPPET_VERSION="~> 4.0" CHECK=build FORGERELEASE=yes GITHUBRELEASE=yes
+    - rvm: jruby-head
+      env: PUPPET_VERSION="~> 4.0" CHECK=test
+
+# Call the default puppetlabs test provider which will validate, lint, and test.
+script:
+  - 'bundle exec rake $CHECK'
+
+notifcations:
+  email:
+    recipients:
+      - patrick@aolabs.nz
+    on_success: change
+    on_failure: change
+
+deploy:
+  - provider: puppetforge
+    user: "aolabs"
+    password:
+      secure: p3v+RqS1QpWkzx0CwSZOcDcn99+mjw4U5OynqQY0v/PIoie6E8eLS+vNZpMmOxxi6cjkBHS+69C8TzZN6HjFOi2i+Nwl6i8fiXxYgf0Q86OFcY6xnqZGnNLNKBGvZJH7K3uhIcBi6QFy+DA/WZHQsazkfsmcUoiFOP8FXl4wnWyG7Vo9dq7w+ZAHSggYfZ7UAtjfxXlzNvYEj8GfrnAvhJ/uoyRifGPxBXwjslUCDJ67NIDYkx0qz56szJrDEjUYEPMiPB0IzfNeJCoFob1boruGclY1Md3oGG76dOttajKEw5qUv0ytYrS1mVwGX2dxQEXWQP5YC4zD4D8kEzMYZ48yjphYPUS/qUNLe5z/B5lROXz5Zln7fIFo5JRYrq9FmtsoQu+C6SMVpC/XhpUlg0edU3TcqwscyAGaD5EZYbUzblsbDaDMkAx03dn/KcDnL3maB/38ppUnuW36Johd6mfUZSr9DVK/g2EPzTbUbmeF9rjL0vCvdZ51mElfSX2YzD1IPtB0eI50X3UzE9ByE/0PPcCnD6T5nGPqA2gcexeS47n50M1kedmK38LOD/y4CDJqwaedV7OFNizr4P/xXmYUaVhse6oi7RvBlgLsFmbCmMQ35zKU8U2uIDtuO6J6iBstXU/8eLiK4rujRU5VqROuhSmun/0iEO2ClTti9AQ=
+    on:
+      tags: true
+      all_branches: true
+      condition: "$FORGERELEASE = yes"
+  - provider: releases
+    api_key:
+      secure: wu6MWLSnosRwRi+PtZZBdVRDFryl+c6UwrD84oC3bpVmDVlT6FwWZYsO4I04QJw9W7AhjgPfTEeHwaKFUOvwko9htwtyxo45EcjgYDjIRZ/2HTrgBG29VWk8iav9ivqeh5dmkpcGzqnCwH/lM9S6673fkoi7neMZZjYi9nr2gfvHUUek63KjCHyd6soPsqcmni7i80xOeX+H8M2fhguvxehFQuffR8511NFBvLGEXN7cDfeiNjSWYdxQd7FjBo3flrVdqOfTq+3O1PrGEBDb0Hxk4maV4yaLqET9rM/U6/X6P6Yuqm0+jI/lxC65ZzsUwBfqD6/uTeHPcoRivOHVE+vRhdvQ9dHGNuAtD0r8qKHM25p24QFWybzxNtkfTtyqYMCzkN9lKi8Y8BH0Gkt41/P/cASB7A6BMLSsu7UEYuYGyUT8M6MojNMLcMTpeRdYZ4b7ACP2rYpIocjpmruofAJLNEWDxXR2IClY1kLgMJH1NTI0kXOted9NcfbKJLJs1GEYRO6VR5q6KvNwR99RIVKQzzFk21RRjFK4+BWzZtDEVX1aZBLKMJLzLZF6ESx15Y2iuiErtCkmokbbwPhApZztklyGedo2oyJGvtcJp8ftIGC3LPciSK2p3d0laYKYGsM58RLhcSHZPw2AO4oS1ZuYJ6mSvu51GVoHH8tMRXg=
+    skip_cleanup: true
+    file_glob: true
+    file: pkg/*gz
+    on:
+      tags: true
+      all_branches: true
+      condition: "$GITHUBRELEASE = yes"
