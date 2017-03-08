@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/travis/aolabs/puppet-retrypuppet/master.svg)](https://travis-ci.org/aolabs/puppet-retrypuppet)
 [![Coverage](https://img.shields.io/coveralls/aolabs/puppet-retrypuppet.svg)](https://coveralls.io/github/aolabs/puppet-retrypuppet)
-[![GitHub Issues](https://img.shields.io/github/issues/aolabs/puppet-retry.svg)](https://github.com/aolabs/puppet-retrypuppet/issues)
+[![GitHub Issues](https://img.shields.io/github/issues/aolabs/puppet-retrypuppet.svg)](https://github.com/aolabs/puppet-retrypuppet/issues)
 [![Puppet Forge Version](http://img.shields.io/puppetforge/v/aolabs/retrypuppet.svg)](https://forge.puppetlabs.com/aolabs/retrypuppet)
 [![Puppet Forge Downloads](http://img.shields.io/puppetforge/dt/aolabs/retrypuppet.svg)](https://forge.puppetlabs.com/aolabs/retrypuppet)
 [![Maintained by AO Labs](https://img.shields.io/badge/by-aolabs-blue.svg)](https://aolabs.nz)
