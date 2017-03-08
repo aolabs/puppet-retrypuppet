@@ -16,7 +16,6 @@ args.pop(0)
 def run():
 
   try:
-  
     # Run puppet inside stdbuf to attempt to eliminate any buffering.
     p = Popen( [ 'stdbuf', '-oL', '-eL', 'puppet' ] + sys.argv, stdout=PIPE, stderr=STDOUT )
 
@@ -37,15 +36,17 @@ def run():
         sys.stdout.write( line.decode() )
         sys.stdout.flush()
 
+  except:
+      print( 'An unrecoverable error occured while trying to execute puppet.' )
+      sys.exit( 127 )
   finally:
     p.wait()
 
-
   # If puppet output indicated that a run was already in progress, then return False.
   if locked:
-    return False
+    return { 'locked': True, 'rc': 11 }   # EWOULDBLOCK / EAGAIN
   else:
-    return True
+    return { 'locked': False, 'rc': p.returncode }
 
 
 
@@ -54,9 +55,19 @@ retries=10
 delay=30
 
 # Retry until run returns true or we run out of retries.
-while not run() and retries:
-  print( 'Run already in progress, will retry in {} seconds, {} attempts remain...'.format( delay, retries ) )
-  sleep( delay )
-  retries -= 1
-  if not retries:
-    print( 'No attempts remain...will exit.')
+while retries:
+  ret = run()
+
+  if ret['locked']:
+    print( 'Run already in progress, will retry in {} seconds, {} attempts remain...'.format( delay, retries ) )
+    retries -= 1
+    sleep( delay )
+  else:
+    break
+
+# Print an error message before we exit if we ran out of retries.
+if not retries:
+  print( 'No attempts remain...will exit.')
+
+# Exit with the return code of puppet (or 11 if we timed out).
+sys.exit( ret['rc'] )

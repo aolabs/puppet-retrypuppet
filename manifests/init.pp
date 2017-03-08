@@ -1,6 +1,6 @@
 class retrypuppet() {
 
-  ensure_packages( [ 'python' ], { 'ensure' => 'present' } )
+  ensure_packages( [ 'coreutils', 'python' ], { 'ensure' => 'present' } )
 
   file { '/usr/local/bin/retrypuppet':
     ensure => 'present',
