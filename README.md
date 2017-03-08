@@ -31,7 +31,7 @@ class { '::retrypuppet': }
 
 Then simply use the `retrypuppet` wrapper script in place of the `puppet` binary.  The script passes any arguments specified on its command-line directly to the `puppet` binary, passes any output from the puppet binary on its standard output (note that any agent output to stderr will be flattened to stdout), and will return Puppet's returncode as its returncode.  If the agent returns a notice that a run is already in progress, then `retrypuppet` will wait for a 30 second back-off period before trying again.  After 10 "blocked" attempts, `retrypuppet` will exit returning 11 (EAGAIN).  To reduce noise, `retrypuppet` will not display any output from a blocked run other than a notice.
 
-```
+```shell
 # retrypuppet agent -tv
 Run already in progress, will retry in 30 seconds, 9 attempts remain...
 Run already in progress, will retry in 30 seconds, 8 attempts remain...
