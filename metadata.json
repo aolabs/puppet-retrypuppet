@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "author": "aolabs",
   "summary": "Simple python script to retry puppet agent execution if the agent is already running.",
-  "license": "LGPLv3",
+  "license": "LGPL-3.0",
   "source": "https://github.com/aolabs/puppet-retrypuppet.git",
   "project_page": "https://github.com/aolabs/puppet-retrypuppet",
   "issues_url": "https://github.com/aolabs/puppet-retrypuppet/issues",
