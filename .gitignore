@@ -4,3 +4,4 @@ Gemfile.local
 vendor/
 spec/fixtures/manifests/
 spec/fixtures/modules/
+coverage/
