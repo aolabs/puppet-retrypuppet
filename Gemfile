@@ -12,6 +12,7 @@ gem 'puppet-check'
 #gem 'puppet-lint', '>= 1.0.0'
 #gem 'puppetlabs_spec_helper', '>= 1.0.0'
 #gem 'rspec-puppet'
+gem 'rake'
 
 # rspec must be v2 for ruby 1.8.7
 #if RUBY_VERSION >= '1.8.7' && RUBY_VERSION < '1.9'
