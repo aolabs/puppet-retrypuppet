@@ -8,7 +8,7 @@ gem 'dpl'
 #gem 'facter', '>= 1.7.0'
 #gem 'metadata-json-lint'
 #gem 'puppet', puppetversion
-#gem 'puppet-check'
+gem 'puppet-check'
 #gem 'puppet-lint', '>= 1.0.0'
 #gem 'puppetlabs_spec_helper', '>= 1.0.0'
 #gem 'rspec-puppet'
