@@ -33,17 +33,17 @@ language: ruby
 matrix:
   include:
     - rvm: 2.2
-      env: PUPPET_VERSION="~> 4.0" CHECK=test
+      env: PUPPET_VERSION="~> 4.0" CHECK=puppetcheck
     - rvm: 2.3
-      env: PUPPET_VERSION="~> 4.0" CHECK=test
+      env: PUPPET_VERSION="~> 4.0" CHECK=puppetcheck
     - rvm: 2.4
-      env: PUPPET_VERSION="~> 4.0" CHECK=test
+      env: PUPPET_VERSION="~> 4.0" CHECK=puppetcheck
     - rvm: 2.4
-      env: PUPPET_VERSION="~> 4.0" CHECK=rubocop
+      env: PUPPET_VERSION="~> 4.0" CHECK=puppetcheck
     - rvm: 2.4
       env: PUPPET_VERSION="~> 4.0" CHECK=build FORGERELEASE=yes GITHUBRELEASE=yes
     - rvm: jruby-head
-      env: PUPPET_VERSION="~> 4.0" CHECK=test
+      env: PUPPET_VERSION="~> 4.0" CHECK=puppetcheck
 
 # Call the default puppetlabs test provider which will validate, lint, and test.
 script:
