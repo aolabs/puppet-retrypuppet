@@ -1,4 +1,4 @@
-class retrypuppet() {
+cclass retrypuppet() {
 
   ensure_packages( [ 'coreutils', 'python' ], { 'ensure' => 'present' } )
 
@@ -6,7 +6,7 @@ class retrypuppet() {
     ensure => 'present',
     owner  => 'root',
     group  => 'root',
-    mode   => '0555',
+    mode     => '0555',
     source => "puppet:///modules/${module_name}/usr/local/bin/retrypuppet",
   }
 
